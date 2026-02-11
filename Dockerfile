@@ -69,6 +69,10 @@ RUN chmod +x /scripts/restart-mariadb.sh
 RUN chmod +x /scripts/status-server.sh
 RUN chmod +x /scripts/xc_install
 
+# Setando fusohorario
+ENV TZ=America/Sao_Paulo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # Setando lsb_release manualmente (preservar script de instalação)
 RUN echo '#!/bin/bash\nif [ "$1" = "-a" ] || [ "$1" = "--all" ]; then\n  echo "Distributor ID: Ubuntu"\n  echo "Description:    Ubuntu 24.04 LTS"\n  echo "Release:        24.04"\n  echo "Codename:       noble"\nelif [ "$1" = "-d" ] || [ "$1" = "--description" ]; then\n  echo "Description:    Ubuntu 24.04 LTS"\nelif [ "$1" = "-r" ] || [ "$1" = "-sr" ] || [ "$1" = "--release" ]; then\n  echo "24.04"\nelif [ "$1" = "-c" ] || [ "$1" = "--codename" ]; then\n  echo "Codename:       noble"\nelif [ "$1" = "-i" ] || [ "$1" = "--id" ]; then\n  echo "Distributor ID: Ubuntu"\nelif [ "$1" = "-s" ] || [ "$1" = "--short" ]; then\n  if [ "$2" = "-r" ]; then\n    echo "24.04"\n  fi\nfi' > /usr/bin/lsb_release && chmod +x /usr/bin/lsb_release
 
