@@ -1,0 +1,7 @@
+# Dados temporarios
+data/home/*
+data/mysql-data/* 
+data/mysql-etc/*
+
+# Dados de desenvolvimento
+XC
