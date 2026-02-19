@@ -27,7 +27,7 @@ case "$SERVICE" in
         fi
         ;;
     mariadb)
-        if ps ax | grep -v grep | grep -q "mysqld"; then
+        if ps ax | grep -v grep | grep -q "mariadbd"; then
             echo "✓ MariaDB está RODANDO"
             exit 0
         else

@@ -1,0 +1,93 @@
+#!/bin/bash
+
+# Função para imprimir com cores (imitando o systemctl)
+print_color() {
+    local color=$1
+    local text=$2
+    echo -e "\e[${color}m${text}\e[0m"
+}
+
+# Verifica se argumentos foram passados
+if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Uso: $0 {status|is-active|start|stop|restart} <nome_do_servico>"
+    echo "Exemplo: $0 status mariadb"
+    exit 1
+fi
+
+ACTION=$1
+
+# --- INÍCIO DA LÓGICA DE ALIAS ---
+# O nome que o usuário digitou (usado para exibição)
+SERVICE_DISPLAY="$2"
+
+# O nome que vamos procurar no Supervisor (usado para consulta)
+SERVICE_TARGET="$2"
+
+case "$SERVICE_TARGET" in
+    mysql)
+        # Se pedir mysql, procura por mariadb no supervisor
+        SERVICE_TARGET="mariadb"
+        ;;
+    # Exemplo: Você pode adicionar outros aliases aqui
+    # cron)
+    #    SERVICE_TARGET="supercronic"
+    #    ;;
+esac
+# --- FIM DA LÓGICA DE ALIAS ---
+
+# Consulta o supervisorctl usando o SERVICE_TARGET
+SUP_OUTPUT=$(supervisorctl status "$SERVICE_TARGET" 2>/dev/null)
+
+# Verifica se o serviço existe no supervisor
+if [[ -z "$SUP_OUTPUT" ]] || echo "$SUP_OUTPUT" | grep -q "No such process"; then
+    echo "Unit $SERVICE_DISPLAY.service could not be found."
+    exit 3
+fi
+
+# Extrai o status (segunda coluna da saída do supervisor)
+STATUS=$(echo "$SUP_OUTPUT" | awk '{print $2}')
+
+case "$ACTION" in
+    status)
+        # Cabeçalho estilo systemctl (usa SERVICE_DISPLAY para mostrar o nome correto)
+        echo "● $SERVICE_DISPLAY.service - Service managed by Supervisor"
+        echo "   Loaded: loaded (/etc/supervisor/conf.d/$SERVICE_TARGET.conf)"
+        
+        if [ "$STATUS" == "RUNNING" ]; then
+            echo "   Active: $(print_color "32" "active (running)") since $(date)"
+        elif [ "$STATUS" == "STOPPED" ]; then
+            echo "   Active: $(print_color "31" "inactive (dead)")"
+        else
+            echo "   Active: $(print_color "31" "failed ($STATUS)")"
+        fi
+
+        if [ "$STATUS" == "RUNNING" ]; then
+            PID=$(echo "$SUP_OUTPUT" | awk '{print $4}' | tr -d ',')
+            echo "   Main PID: $PID (supervisord)"
+        fi
+        
+        echo ""
+        echo "Hint: $SUP_OUTPUT"
+        ;;
+
+    is-active)
+        if [ "$STATUS" == "RUNNING" ]; then
+            echo "active"
+            exit 0
+        else
+            echo "inactive"
+            exit 3
+        fi
+        ;;
+
+    start|stop|restart)
+        # Repassa o comando para o supervisor usando o SERVICE_TARGET (o nome real)
+        supervisorctl $ACTION $SERVICE_TARGET
+        exit $?
+        ;;
+
+    *)
+        echo "Comando '$ACTION' não suportado neste wrapper."
+        exit 1
+        ;;
+esac

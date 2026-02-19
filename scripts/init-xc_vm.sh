@@ -8,5 +8,4 @@ if [ -x "$SERVICE" ]; then
     "$SERVICE" start
 else
     echo "Sistema não instalado. Inicie a instalaçao"
-#    python3 /xc_install
 fi

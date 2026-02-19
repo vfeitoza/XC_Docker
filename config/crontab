@@ -1,0 +1,3 @@
+* * * * * /home/xc_vm/bin/php/bin/php /home/xc_vm/crons/root_signals.php # XC_VM
+* * * * * /home/xc_vm/bin/php/bin/php /home/xc_vm/crons/root_mysql.php # XC_VM
+

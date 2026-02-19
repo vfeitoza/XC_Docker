@@ -1,11 +1,11 @@
 services:
   webstack:
     build: .
-    container_name: xc_tom
+    container_name: xc_vm
     ports:
-      - "9306:3306" # Porta do banco de dados
-      - "980:8080" # Porta do painel web
-      - "943:8443" # Porta do painel web com certificado (usar letsencrypt)
+      - "3306:3306" # Porta do banco de dados
+      - "8080:8080" # Porta do painel web
+      - "8443:8443" # Porta do painel web com certificado (usar letsencrypt)
       - "8880:8880" # Porta de dados dos streans
     volumes:
       - ./XC:/home/XC # montagem usada apenas para desenvolvimento
@@ -13,3 +13,7 @@ services:
       - ./data/mysql-etc:/etc/mysql/
       - ./data/mysql-data:/var/lib/mysql
     restart: unless-stopped
+
+
+
+

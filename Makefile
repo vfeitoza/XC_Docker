@@ -1,4 +1,4 @@
-.PHONY: help build up down logs install clean restart-mariadb check-nginx check-php check-mariadb finish-db
+.PHONY: help build up down logs install clean restart-mariadb check-nginx check-php check-mariadb finish-db shell
 
 help:
 	@echo "Comandos disponíveis:"
@@ -14,6 +14,7 @@ help:
 	@echo "  make start-server    - Inicia o XC no container após a instalação"
 	@echo "  make restart-mariadb - Reinicia o serviço MariaDB no container"
 	@echo "  make finish-db       - Finaliza ajustes no banco depois de configuração via painel"
+	@echo "  make shell           - Loga-se no container para execução de comandos"
 
 build:
 	docker compose build
@@ -53,3 +54,6 @@ start-server:
 
 finish-db:
 	docker compose exec webstack /home/xc_vm/status
+	
+shell:
+	docker compose exec webstack bash
