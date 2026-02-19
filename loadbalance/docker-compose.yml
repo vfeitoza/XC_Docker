@@ -1,0 +1,11 @@
+services:
+  webstack:
+    build: .
+    container_name: xc_tom_lb
+    ports:
+      - "80:80" # Porta do painel web
+      - "2222:2222" # Porta SSH
+    volumes:
+      - ./XC:/home/XC # montagem usada apenas para desenvolvimento
+      - ./data/home:/home/xc_vm
+    restart: unless-stopped

@@ -1,7 +1,13 @@
-# Dados temporarios
-data/home/*
-data/mysql-data/* 
-data/mysql-etc/*
+# Dados temporarios para o main
+main/data/home/*
+main/data/mysql-data/* 
+main/data/mysql-etc/*
+
+# Dados temporarios para o load balance
+loadbalance/data/home/*
 
 # Dados de desenvolvimento
-XC
+main/XC
+loadbalance/XC
+
+
