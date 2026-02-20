@@ -70,6 +70,7 @@ RUN apt-get install -y \
 
 # Criando dados do mysql e logs 
 RUN mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld \
+    && mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld  \
     && mkdir -p /var/log/supervisor
 
 # Adicionando usuario do sistema
